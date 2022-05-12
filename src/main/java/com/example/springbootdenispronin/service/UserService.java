@@ -8,19 +8,17 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    List<User> index();
+    List<User> getAll();
 
-    void save(User user);
+    void create(User user);
 
-    void update(User user, int id);
+    void update(User user);
 
-    User showById(int id);
+    User get(Long id);
 
-    User showByName(String name);
-
-    void delete(int id);
+    void delete(Long id);
 
     UserDetails loadUserByUsername(String name);
 
-
+    User showByName(String name);
 }
