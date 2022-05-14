@@ -1,7 +1,7 @@
 package com.example.springbootdenispronin.service;
 
 import com.example.springbootdenispronin.dao.UserDao;
-import com.example.springbootdenispronin.model.CurrentUser;
+import com.example.springbootdenispronin.config.security.CurrentUser;
 import com.example.springbootdenispronin.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

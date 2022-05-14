@@ -1,4 +1,4 @@
-package com.example.springbootdenispronin.model;
+package com.example.springbootdenispronin.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
