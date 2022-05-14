@@ -1,10 +1,10 @@
-package com.example.springbootdenispronin.service;
+package com.example.springbootdenispronin.dao;
 
 import com.example.springbootdenispronin.model.User;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserDao {
 
     List<User> getAll();
 

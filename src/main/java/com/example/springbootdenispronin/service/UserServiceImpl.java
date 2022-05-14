@@ -1,74 +1,73 @@
 package com.example.springbootdenispronin.service;
 
-import com.example.springbootdenispronin.model.Role;
+import com.example.springbootdenispronin.dao.RoleDao;
+import com.example.springbootdenispronin.dao.UserDao;
 import com.example.springbootdenispronin.model.User;
-import com.example.springbootdenispronin.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UserDao userDao;
+    private final RoleDao roleDao;
 
-    @Override
-    public List<User> index() {
-        return usersRepository.findAll();
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserDao userDao, RoleDao roleDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void save(User user) {
-
-        if (!usersRepository.findUserByName(user.getUsername()).isPresent()) {
-            user.setRoles(Collections.singleton(new Role("ROLE_USER")));
-            usersRepository.save(user);
-        }
+    public List<User> getAll() {
+        List<User> users = userDao.getAll();
+        log.info("Получен список всех пользователей");
+        return users;
     }
 
     @Override
-    public void update(User user, int id) {
-        usersRepository.save(user);
+    @Transactional
+    public void create(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Collections.singleton(roleDao.getRoleByName("ROLE_USER")));
+        userDao.create(user);
+        log.info("Пользователь с именем={} сохранен", user.getName());
     }
 
     @Override
-    public User showById(int id) {
-        Optional<User> optionalUser = usersRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        }
-        return null;
+    @Transactional
+    public void update(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // переделать. Сделать апдейт через джоин, где роль юзера будет находиться по его id
+        user.setRoles(Collections.singleton(roleDao.getRoleByName("ROLE_USER")));
+        userDao.update(user);
+        log.info("Пользователь с id={} обновлен", user.getId());
+    }
+
+    @Override
+    public User get(Long id) {
+        User user = userDao.get(id);
+        log.info("Пользователь с id={} найден", id);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userDao.delete(id);
+        log.info("Пользователь с id={} удален", id);
     }
 
     @Override
     public User showByName(String name) {
-        Optional<User> optionalUser = usersRepository.findUserByName(name);
-
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        }
-        return null;
-    }
-
-    @Override
-    public void delete(int id) {
-        usersRepository.deleteById(id);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String name) {
-        User user = usersRepository.findUserByName(name).get();
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+        return userDao.showByName(name);
     }
 }
