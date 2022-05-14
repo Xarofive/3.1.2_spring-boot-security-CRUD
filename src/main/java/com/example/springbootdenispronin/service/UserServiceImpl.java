@@ -46,6 +46,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // переделать. Сделать апдейт через джоин, где роль юзера будет находиться по его id
+        user.setRoles(Collections.singleton(roleDao.getRoleByName("ROLE_USER")));
         userDao.update(user);
         log.info("Пользователь с id={} обновлен", user.getId());
     }
