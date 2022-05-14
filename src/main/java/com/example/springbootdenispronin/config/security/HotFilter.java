@@ -9,20 +9,26 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class HotFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CurrentUser currentUser = (CurrentUser) auth.getPrincipal();
+        if (auth != null) {
+            CurrentUser currentUser = (CurrentUser) auth.getPrincipal();
 
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+            HttpServletRequest request = (HttpServletRequest) servletRequest;
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (currentUser.getAge() < 18 && "/hot".equals(request.getRequestURI())) {
-            throw new RuntimeException("Grow up first!");
+            if (currentUser.getAge() < 18 && "/hot".equals(request.getRequestURI())) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            } else {
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
-
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
