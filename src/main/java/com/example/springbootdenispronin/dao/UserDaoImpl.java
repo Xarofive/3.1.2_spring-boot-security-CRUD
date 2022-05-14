@@ -47,7 +47,7 @@ public class UserDaoImpl implements UserDao {
     public User showByName(String name) {
         // тут prepared надо использовать ???
         return entityManager
-                .createQuery("select u from User u where u.name =?1", User.class)
+                .createQuery("select u from User u join fetch u.roles r where u.name =?1 ", User.class)
                 .setParameter(1, name)
                 .getSingleResult();
     }
