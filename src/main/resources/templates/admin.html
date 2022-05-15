@@ -37,20 +37,21 @@
 <h3>Add User</h3>
 <form th:method="POST" th:action="@{/admin}" th:object="${userToAdd}">
     <label for="name">Name:</label>
-    <input type="text" th:field="*{name}" id="name"/>
+    <input required type="text" th:field="*{name}" id="name"/>
     <p>Minimum name length is 2. Maximum is 20.</p>
     <label for="age">Age:</label>
-    <input type="number" min="0" th:field="*{age}" id="age"/>
+    <input required type="number" min="0" th:field="*{age}" id="age"/>
     <p>Minimum age is 0.</p>
     <label for="age">Password:</label>
-    <input type="text" th:field="*{password}" id="password"/>
+    <input required type="text" th:field="*{password}" id="password"/>
     <p>Minimum password length is 2.</p>
-    <label for="role">Role:</label>
+    <label for="role" class="form-label"><b>Role:</b></label>
     <div class="form-group">
-        <select multiple class="form-control" name="roleIds"
+        <select multiple required class="form-control" name="roleIds"
                 style="height: 60px" id="role">
-            <option value="1">ADMIN</option>
-            <option selected value="2">USER</option>
+            <th:block th:each="role : ${roles}">
+                <option th:value="${role.id}" th:text="${role.role}">ROLE</option>
+            </th:block>
         </select>
     </div>
     <input type="submit" name="submitAddition" value="Add User"/>

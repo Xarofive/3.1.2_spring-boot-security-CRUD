@@ -1,6 +1,7 @@
 package com.example.springbootdenispronin.controller;
 
 import com.example.springbootdenispronin.model.User;
+import com.example.springbootdenispronin.service.RoleService;
 import com.example.springbootdenispronin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -16,14 +17,17 @@ import javax.validation.Valid;
 public class AdminController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
     public String index(Model model) {
         model.addAttribute("users", userService.getAll());
+        model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("userToAdd", new User());
         return "admin";
     }
@@ -31,6 +35,7 @@ public class AdminController {
     @GetMapping("/{id}")
     public String editUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUserWithRolesById(id));
+        model.addAttribute("roles", roleService.getAllRoles());
         return "user";
     }
 
