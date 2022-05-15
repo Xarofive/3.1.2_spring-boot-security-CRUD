@@ -28,8 +28,6 @@ public class User implements UserDetails {
     @Min(value = 0)
     private int age;
 
-
-    //    @ManyToMany(cascade = CascadeType.ALL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
