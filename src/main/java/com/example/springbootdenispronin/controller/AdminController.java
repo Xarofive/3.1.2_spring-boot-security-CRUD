@@ -30,7 +30,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public String editUser(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", userService.get(id));
+        model.addAttribute("user", userService.getUserWithRolesById(id));
         return "user";
     }
 
